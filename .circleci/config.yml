@@ -13,14 +13,11 @@ jobs:
 
     working_directory: ~/project
 
-    setps:
+    steps:
       - checkout:
-
-        # Fetch all submodules
         post:
           - git submodule sync
           - git submodule update --init --recursive
-
 
   ## Phase Resolve Deps
   resolve_dependencies:
@@ -67,7 +64,7 @@ jobs:
 
 workflows:
   version: 2
-  pipeline:
+  build-pipeline:
     jobs:
       - checkout_code
       - resolve_dependencies:
@@ -76,3 +73,8 @@ workflows:
       - compile_and_test:
         requires:
           - resolve_dependencies
+      - deploy:
+        requires:
+          - checkout_code
+          - resolve_dependencies
+          - compile_and_test
