@@ -4,26 +4,36 @@
 #
 version: 2
 jobs:
-  build:
+  #Phases
+
+  ## Phase Checkout
+  checkout_code:
     docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:9-jdk-browsers
+      - image: circleci/openjdk:9-jdk
 
-    working_directory: ~/repo
+    working_directory: ~/project
 
-    environment:
-      # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
-    
-    steps:
-
-      # Fetch all submodules
+    setps:
       - checkout:
-          post:
+
+        # Fetch all submodules
+        post:
           - git submodule sync
           - git submodule update --init --recursive
 
 
+  ## Phase Resolve Deps
+  resolve_dependencies:
+    docker:
+      - image: circleci/openjdk:9-jdk
+
+    working_directory: ~/project
+
+    environment:
+      # Customize the JVM maximum heap limit
+      MAVEN_OPTS: -Xmx3200m
+
+    steps:
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -37,8 +47,32 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
-        
+
+  ## Compile and Run Test Suite
+  compile_and_test:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:9-jdk
+
+    working_directory: ~/project
+
+    environment:
+      # Customize the JVM maximum heap limit
+      MAVEN_OPTS: -Xmx3200m
+    
+    steps:
+
       # run tests!
-      - run: mvn clean package
+      - run: mvn clean test
 
-
+workflows:
+  version: 2
+  pipeline:
+    jobs:
+      - checkout_code
+      - resolve_dependencies:
+        requires:
+          - checkout_code
+      - compile_and_test:
+        requires:
+          - resolve_dependencies
