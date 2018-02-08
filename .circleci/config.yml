@@ -11,7 +11,7 @@ workflows:
       - resolve_dependencies:
           requires:
             - checkout_code
-      - compile_and_test:
+      - unit_test:
           requires:
             - resolve_dependencies
 
@@ -76,7 +76,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
   ## Compile and Run Test Suite
-  compile_and_test:
+  unit_test:
     <<: *mavenAndworkdir
 
 
