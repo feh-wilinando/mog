@@ -36,7 +36,7 @@ jobs:
 
     steps:
 
-      - checkout:
+      - checkout
       # Fetch all git submodules
       - run: git submodule sync
       - run: git submodule update --init --recursive
