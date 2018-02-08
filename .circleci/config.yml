@@ -9,11 +9,11 @@ workflows:
     jobs:
       - checkout_code
       - compile_and_test:
-        requires:
-        - resolve_dependencies
+          requires:
+            - resolve_dependencies
       - resolve_dependencies:
-        requires:
-        - checkout_code
+          requires:
+            - checkout_code
 
 
 version: 2
