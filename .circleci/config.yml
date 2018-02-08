@@ -11,7 +11,7 @@ workflows:
       - resolve_dependencies:
           requires:
             - checkout_code
-      - unit_test:
+    - unit_test:
           requires:
             - resolve_dependencies
 
@@ -90,4 +90,3 @@ jobs:
           - v1-dependencies-
       # run tests!
       - run: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent test sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=feh-wilinando-github -Dsonar.login=5bafc0e8f92e146735bd24be3f5f860dd2c7feff
-
