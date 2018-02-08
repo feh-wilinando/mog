@@ -10,10 +10,10 @@ workflows:
       - checkout_code
       - compile_and_test:
         requires:
-        - resolve_dependencies
+          - resolve_dependencies
       - resolve_dependencies:
         requires:
-        - checkout_code
+          - checkout_code
 
 
 version: 2
