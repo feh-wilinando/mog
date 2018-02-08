@@ -40,15 +40,16 @@ jobs:
     steps:
       - checkout
 
+
+      # Fetch all git submodules
+      - run: git submodule sync
+      - run: git submodule update --init --recursive
+
      # Save repo in cache
       - save_cache:
           paths:
             - ~/project
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-
-      # Fetch all git submodules
-      - run: git submodule sync
-      - run: git submodule update --init --recursive
 
   ## Phase Resolve Deps
   resolve_dependencies:
