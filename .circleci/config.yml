@@ -5,16 +5,26 @@
 version: 2
 
 workflows:
+    pipeline:
+      jobs:
+        resolve_dependencies  :
+          requires :
+            compile_and_test :
+                requires
+              }}}
+
+
+workflows:
   version: 2
   pipeline:
     jobs:
-      - checkout_code
-      - resolve_dependencies:
-        requires:
-          - checkout_code
       - compile_and_test:
         requires:
           - resolve_dependencies
+      - resolve_dependencies:
+        requires:
+          - checkout_code
+      - checkout_code
 
 
 jobs:
