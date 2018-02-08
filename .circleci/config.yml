@@ -38,7 +38,7 @@ jobs:
 
       - checkout:
       # Fetch all git submodules
-        post:
+      post:
         - git submodule sync
         - git submodule update --init --recursive
 
