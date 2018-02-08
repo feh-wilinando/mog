@@ -73,8 +73,3 @@ workflows:
       - compile_and_test:
         requires:
           - resolve_dependencies
-      - deploy:
-        requires:
-          - checkout_code
-          - resolve_dependencies
-          - compile_and_test
