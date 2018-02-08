@@ -22,7 +22,7 @@ defaults: &mavenAndworkdir
   docker:
       # specify the version you desire here
       - image: circleci/openjdk:9-jdk
-      
+
   environment:
     # Customize the JVM maximum heap limit
     MAVEN_OPTS: -Xmx3200m
@@ -75,13 +75,13 @@ jobs:
   compile_and_test:
     <<: *mavenAndworkdir
 
-    # Restore dependencies and repo from cache
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "pom.xml" }}
-        - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
 
     steps:
+      # Restore dependencies and repo from cache
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "pom.xml" }}
+          - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
 
       # run tests!
       - run: mvn clean test
