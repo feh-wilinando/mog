@@ -18,7 +18,7 @@ version: 2
 defaults: &mavenAndworkdir
   docker:
       # specify the version you desire here
-      - image: circleci/openjdk:9-jd
+      - image: circleci/openjdk:9-jdk
   working_directory: ~/project
 
 
