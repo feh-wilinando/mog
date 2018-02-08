@@ -2,7 +2,6 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-version: 2
 
 workflows:
   version: 2
@@ -17,15 +16,23 @@ workflows:
       - checkout_code
 
 
+version: 2
+
+defaults: &mavenAndworkdir
+  docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:9-jdk
+
+  working_directory: ~/project
+
+  
+
 jobs:
   #Phases
 
   ## Phase Checkout
   checkout_code:
-    docker:
-      - image: circleci/openjdk:9-jdk
-
-    working_directory: ~/project
+    <<: *mavenAndworkdir
 
     steps:
       - checkout:
@@ -35,10 +42,7 @@ jobs:
 
   ## Phase Resolve Deps
   resolve_dependencies:
-    docker:
-      - image: circleci/openjdk:9-jdk
-
-    working_directory: ~/project
+    <<: *mavenAndworkdir
 
     environment:
       # Customize the JVM maximum heap limit
@@ -61,11 +65,7 @@ jobs:
 
   ## Compile and Run Test Suite
   compile_and_test:
-    docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:9-jdk
-
-    working_directory: ~/project
+    <<: *mavenAndworkdir
 
     environment:
       # Customize the JVM maximum heap limit
