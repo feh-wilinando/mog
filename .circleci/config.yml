@@ -7,7 +7,10 @@ workflows:
   version: 2
   pipeline:
     jobs:
-      - resolve_dependencies
+      - checkout_code
+      - resolve_dependencies:
+          requires:
+            - checkout_code
       - compile_and_test:
           requires:
             - resolve_dependencies
@@ -19,6 +22,9 @@ defaults: &mavenAndworkdir
   docker:
       # specify the version you desire here
       - image: circleci/openjdk:9-jdk
+  environment:
+    # Customize the JVM maximum heap limit
+    MAVEN_OPTS: -Xmx3200m
   working_directory: ~/project
 
 
@@ -26,30 +32,38 @@ defaults: &mavenAndworkdir
 jobs:
   #Phases
 
-  ## Phase Resolve Deps
-  resolve_dependencies:
+  checkout_code:
     <<: *mavenAndworkdir
 
-    environment:
-      # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
-
     steps:
-
       - checkout
+
+     # Save repo in cache
+      - save_cache:
+          paths:
+            - ~/project
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+
       # Fetch all git submodules
       - run: git submodule sync
       - run: git submodule update --init --recursive
 
-      # Download and cache dependencies
+  ## Phase Resolve Deps
+  resolve_dependencies:
+    <<: *mavenAndworkdir
+
+    steps:
+
+      # Restore dependencies and repo from cache
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
 
+      # Download and cache dependencies
       - run: mvn dependency:go-offline
 
+      # Save dependencies in cache
       - save_cache:
           paths:
             - ~/.m2
@@ -59,10 +73,12 @@ jobs:
   compile_and_test:
     <<: *mavenAndworkdir
 
-    environment:
-      # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
-    
+    # Restore dependencies and repo from cache
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "pom.xml" }}
+        - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+
     steps:
 
       # run tests!
