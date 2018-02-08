@@ -11,7 +11,7 @@ workflows:
       - resolve_dependencies:
           requires:
             - checkout_code
-    - unit_test:
+      - unit_test:
           requires:
             - resolve_dependencies
 
