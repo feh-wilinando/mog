@@ -32,8 +32,11 @@ jobs:
 
   ## Phase Checkout
   checkout_code:
-    <<: *mavenAndworkdir
+    docker:
+        # specify the version you desire here
+        - image: circleci/openjdk:9-jdk
 
+    working_directory: ~/project
     steps:
       - checkout:
         post:
