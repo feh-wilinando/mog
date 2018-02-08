@@ -38,9 +38,9 @@ jobs:
 
       - checkout:
       # Fetch all git submodules
-          post:
-            - git submodule sync
-            - git submodule update --init --recursive
+        post:
+          - git submodule sync
+          - git submodule update --init --recursive
 
       # Download and cache dependencies
       - restore_cache:
