@@ -5,6 +5,7 @@
 version: 2
 
 workflows:
+  version: 2
   pipeline:
     jobs:
       - checkout_code
